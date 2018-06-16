@@ -1,96 +1,44 @@
 open Basics
 
-type ('a, 'x) t = ('a, 'x) Platform.task
+type ('a, 'x) t = ('a, 'x) Fx.Scheduler.task
 
-external succeed: 'a -> ('a, _) t = "succeed"
-[@@bs.module "./js/scheduler"]
+let succeed = Fx.Scheduler.succeed
 
-external fail: 'x -> (_, 'x) t = "fail"
-[@@bs.module "./js/scheduler"]
+let fail = Fx.Scheduler.fail
 
-external and_then: ('a -> ('b,'x) t) -> ('a,'x) t -> ('b,'x) t = "andThen"
-[@@bs.module "./js/scheduler"]
+let and_then = Fx.Scheduler.and_then
 
-external on_error: ('x -> ('a,'y) t) -> ('a,'x) t -> ('a,'y) t = "onError"
-[@@bs.module "./js/scheduler"]
+let on_error = Fx.Scheduler.on_error
 
+let map = Fx.Scheduler.map
 
-let map fn t1 =
-  t1
-  |> and_then (fun a -> succeed (fn a) )
+let map2 = Fx.Scheduler.map2
 
-let map2 fn t1 t2 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> succeed (fn r1 r2)))
+let map3 = Fx.Scheduler.map3
 
-let map3 fn t1 t2 t3 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> t3
-  |> and_then (fun r3 -> succeed (fn r1 r2 r3))))
+let map4 = Fx.Scheduler.map4
 
-let map4 fn t1 t2 t3 t4 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> t3
-  |> and_then (fun r3 -> t4
-  |> and_then (fun r4 -> succeed (fn r1 r2 r3 r4)))))
+let map5 = Fx.Scheduler.map5
 
-let map5 fn t1 t2 t3 t4 t5 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> t3
-  |> and_then (fun r3 -> t4
-  |> and_then (fun r4 -> t5
-  |> and_then (fun r5 -> succeed (fn r1 r2 r3 r4 r5))))))
+let map6 = Fx.Scheduler.map6
 
-let map6 fn t1 t2 t3 t4 t5 t6 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> t3
-  |> and_then (fun r3 -> t4
-  |> and_then (fun r4 -> t5
-  |> and_then (fun r5 -> t6
-  |> and_then (fun r6 -> succeed (fn r1 r2 r3 r4 r5 r6)))))))
+let map7 = Fx.Scheduler.map7
 
-let map7 fn t1 t2 t3 t4 t5 t6 t7 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> t3
-  |> and_then (fun r3 -> t4
-  |> and_then (fun r4 -> t5
-  |> and_then (fun r5 -> t6
-  |> and_then (fun r6 -> t7
-  |> and_then (fun r7 -> succeed (fn r1 r2 r3 r4 r5 r6 r7))))))))
+let map8 = Fx.Scheduler.map8
 
-let map8 fn t1 t2 t3 t4 t5 t6 t7 t8 =
-  t1
-  |> and_then (fun r1 -> t2
-  |> and_then (fun r2 -> t3
-  |> and_then (fun r3 -> t4
-  |> and_then (fun r4 -> t5
-  |> and_then (fun r5 -> t6
-  |> and_then (fun r6 -> t7
-  |> and_then (fun r7 -> t8
-  |> and_then (fun r8 -> succeed (fn r1 r2 r3 r4 r5 r6 r7 r8)))))))))
+let sequence = Fx.Scheduler.sequence
 
-let sequence ts =
-  let cons a b = a :: b in
-  List.fold_right (map2 cons) ts (succeed [])
-
-let map_error fn t =
-  t |> on_error (fn >> fail)
+let map_error = Fx.Scheduler.map_error
 
 (* Commands *)
 
-let ctx = Ext_fx.ctx ()
+let ctx = Fx.ctx ()
 
 type 'a my_cmd =
   Perform of ('a, unit) t
 
 let command value =
-  Ext_fx.command ctx value
+  Fx.command ctx value
 
 let perform to_msg task =
   command (Perform (map to_msg task))
@@ -113,8 +61,8 @@ let init =
 let on_effects router cmds _state =
   let spawn_cmd (Perform task) =
       task
-      |> and_then (Ext_fx.send_to_app router)
-      |> Process.spawn
+      |> and_then (Fx.send_to_app router)
+      |> Fx.Scheduler.spawn
   in
   map (fun _ -> ()) (sequence (List.map spawn_cmd cmds))
 
@@ -122,7 +70,7 @@ let on_self_message _router _msg _state =
   succeed ()
 
 let () = 
-  Ext_fx.cmd_manager
+  Fx.cmd_manager
   ~ctx: ctx
   ~init: init
   ~on_effects: on_effects

@@ -5,8 +5,7 @@ type process_id
 (* program *)
 
 type 'flags config =
-  { flags: 'flags
-  } 
+  { flags: 'flags } 
   [@@bs.deriving abstract]  
 
 type ('flags, 'model, 'msg) program = ('flags config -> unit)

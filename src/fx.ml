@@ -45,4 +45,4 @@ external sub_manager:
   unit = "registerSubscriptionManager"
 [@@bs.module "./js/platform"]
 
-module Scheduler = Ext_fx_scheduler
+module Scheduler = Fx_scheduler
