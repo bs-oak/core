@@ -1,5 +1,5 @@
 {
-  "name": "bs-oak-core",
+  "name": "@bs-oak/core",
   "version": "0.1.2",
   "scripts": {
     "clean": "bsb -clean-world",
