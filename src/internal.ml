@@ -5,4 +5,4 @@ external program :
   subscriptions: ('model -> 'msg Sub.t) ->
   stepper_builder: (('msg -> unit) -> 'model -> ('model -> unit)) ->
   unit = "initialize"
-  [@@bs.module "./js/platform"]
+  [@@bs.module "@bs-oak/core/src/js/platform"]
