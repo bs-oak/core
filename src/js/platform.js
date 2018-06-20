@@ -207,6 +207,7 @@ export {
     map,
     sendToApp,
     sendToSelf,
+    newEffectManagerCtx,
     registerEffectManager,
     registerCommandManager,
     registerSubscriptionManager
