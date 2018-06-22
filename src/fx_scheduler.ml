@@ -8,7 +8,7 @@ external succeed: 'a -> ('a, _) task = "succeed"
 external fail: 'x -> (_, 'x) task = "fail"
 [@@bs.module "@bs-oak/core/src/js/scheduler"]
 
-external binding: ((('a,'x) task -> unit) -> (unit -> unit)) -> ('a, 'x) task = "bind"
+external binding: ((('a,'x) task -> unit) -> (unit -> unit)) -> ('a, 'x) task = "binding"
 [@@bs.module "@bs-oak/core/src/js/scheduler"]
 
 external and_then: ('a -> ('b,'x) task) -> ('a,'x) task -> ('b,'x) task = "andThen"
