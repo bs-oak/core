@@ -143,7 +143,7 @@ function insert(isCmd, newEffect, effects) {
 
     isCmd
         ? (effects.cmds = [newEffect, effects.cmds]) // LIST CONS
-        : (effects.subs = [newEffect, effects.cmds]);
+        : (effects.subs = [newEffect, effects.subs]);
 
     return effects;
 }
