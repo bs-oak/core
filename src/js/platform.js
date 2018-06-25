@@ -27,10 +27,11 @@ function initialize(flags, init, update, subscriptions, stepperBuilder) {
 // EFFECT MANAGERS
 
 var effectManagers = {};
+var effectManagerID = 0;
 
 function newEffectManagerCtx() {
-    function b(a) { return a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, b) } // UUID V4
-    return b();
+    effectManagerID++;
+    return effectManagerID.toString();
 }
 
 function registerEffectManager(ctx, init, onEffects, onSelfMsg, cmdMap, subMap) {
@@ -108,9 +109,9 @@ function gatherEffects(isCmd, bag, effectsDict, taggers) {
             return;
 
         case BAG_NODE:
-            for (var list = bag.bags; list.b; list = list.b) // WHILE_CONS
+            for (var list = bag.bags; list[1]; list = list[1]) // WHILE_CONS
             {
-                gatherEffects(isCmd, list.a, effectsDict, taggers);
+                gatherEffects(isCmd, list[0], effectsDict, taggers);
             }
             return;
 
