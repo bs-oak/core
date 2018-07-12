@@ -109,9 +109,10 @@ function gatherEffects(isCmd, bag, effectsDict, taggers) {
             return;
 
         case BAG_NODE:
-            for (var list = bag.bags; list[1]; list = list[1]) // WHILE_CONS
-            {
-                gatherEffects(isCmd, list[0], effectsDict, taggers);
+            var bags = bag.bags;
+            var len = bags.length;
+            for (var i = 0; i < len; i++) {
+                gatherEffects(isCmd, bags[i], effectsDict, taggers);
             }
             return;
 
@@ -159,10 +160,10 @@ function leaf(home, value) {
     };
 }
 
-function batch(list) {
+function batch(bags) {
     return {
         $: BAG_NODE,
-        bags: list
+        bags: bags
     };
 }
 
